@@ -1,0 +1,66 @@
+﻿@model QuizDto
+@using Project.Client.Common.Enums
+@using Project.Client.Common.Models;
+
+@{
+    ViewData["Title"] = "Create Quiz";
+}
+
+<div class="text-center">
+    <h1 class="p-3 rounded-pill my-5 box-shadow bg-light text-dark d-inline-block">Create quiz</h1>
+</div>
+<div class="container d-flex justify-content-center">
+    <form id="createQuizForm" asp-controller="Quiz" asp-action="CreateQuiz" method="post">
+        <table class="w-100">
+            <!-- section Name -->
+            <tr>
+                <td class="w-25">
+                    <label asp-for="Name">Name</label>
+                </td>
+                <td class="w-75">
+                    <input type="text" asp-for="Name" name="Name" class="form-control" value="@Model?.Name" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="text-center">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </td>
+            </tr>
+            <!-- section Description -->
+            <tr>
+                <td class="w-25">
+                    <label asp-for="Description">Description</label>
+                </td>
+                <td class="w-75">
+                    <textarea asp-for="Description" class="form-control" name="Description" value="@Model?.Description"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="text-center">
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </td>
+            </tr>
+            <!-- section Category -->
+            <tr>
+                <td class="w-25">
+                    <label asp-for="Category">Category</label>
+                </td>
+                <td class="w-75">
+                    <select class="form-control" asp-for="Category" asp-items="Html.GetEnumSelectList<Category>()">
+                        <option selected="selected" value="@Model?.Category">Select category</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="text-center">
+                    <span asp-validation-for="Category" class="text-danger"></span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="w-100 text-center">
+                    <button type="submit" class="btn btn-danger text-light">Create Quiz</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

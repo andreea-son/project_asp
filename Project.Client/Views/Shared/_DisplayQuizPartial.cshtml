@@ -1,0 +1,21 @@
+﻿@using Project.Client.Common.Models;
+@using System.Security.Claims;
+@model QuizDisplayDto
+<div class="quiz-div ms-5 my-2">
+    <h4>@Model.Name</h4>
+    @if (!string.IsNullOrEmpty(Model.Description))
+    {
+        <h5>@Model.Description</h5>
+    }
+    <p>
+        @Model.NrOfQuestions question@(Model.NrOfQuestions == 1 ? string.Empty : "s")
+    </p>
+    @if (User?.Identity?.IsAuthenticated == true)
+    {
+        <a style="padding-right: 10px;" asp-action="StartQuiz" asp-controller="Quiz" asp-route-id="@Model.Id" title="Start" class="text-danger">Start quiz</a>
+    }
+    @if (User.IsInRole("Admin") || (User?.FindFirst(ClaimTypes.NameIdentifier)?.Value == @Model.UserId.ToString() && User.IsInRole("Creator")))
+    {
+        <span style="padding-right: 10px; cursor: pointer; text-decoration: underline;" title="Delete" class="text-danger delete-btn" data-id="@Model.Id" data-toggle="modal" data-target="#confirmDeleteModal">Delete</span>
+    }
+</div>

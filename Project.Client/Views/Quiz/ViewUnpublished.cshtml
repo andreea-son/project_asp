@@ -1,0 +1,121 @@
+﻿@using Project.Client.Common.Models;
+@using Project.Client.Common.Enums;
+@using System.Security.Claims;
+@model IEnumerable<QuizDisplayDto>
+
+@{
+    int numberOfUnpublishedQuizzes = Model.Count(quiz => quiz.Published == false && User?.FindFirst(ClaimTypes.NameIdentifier)?.Value == quiz.UserId.ToString());
+    ViewData["Title"] = "View Unpublished Quizzes";
+}
+<div class="text-center">
+    <h1 class="my-5 d-inline-block p-3 rounded-pill box-shadow bg-light text-dark me-5">My Unpublished Quizzes</h1>
+    <a asp-action="CreateQuiz" asp-controller="Quiz" title="Add quiz" class="text-light btn btn-danger rounded-circle"><i class="fa-solid fa-plus"></i></a>
+</div>
+
+@if (numberOfUnpublishedQuizzes == 0)
+{
+    <div class="text-center">
+        <h4>No quizzes yet.</h4>
+    </div>
+}
+else
+{
+    <section class="container d-flex justify-content-center">
+        <div>
+            <h2 class="mb-3"></h2>
+            @foreach (var quiz in Model)
+            {
+                @if (User?.FindFirst(ClaimTypes.NameIdentifier)?.Value == quiz.UserId.ToString() && quiz.Published == false)
+                {
+                    string category;
+                    if (quiz.Category == Category.ComputerScience)
+                    {
+                        category = "Computer Science";
+                    }
+                    else
+                    {
+                        category = "Mathematics";
+                    }
+                    <div class="quiz-div ms-5 my-2">
+                        <h4>@quiz.Name</h4>
+                        @if (!string.IsNullOrEmpty(quiz.Description))
+                        {
+                            <h5>@quiz.Description</h5>
+                        }
+                        <p>@category quiz</p>
+                        <p>
+                            @quiz.NrOfQuestions question@(quiz.NrOfQuestions == 1 ? string.Empty : "s")
+                        </p>
+                        <a style="padding-right: 10px;" asp-action="UpdateQuiz" asp-controller="Quiz" asp-route-id="@quiz.Id" title="Update" class="text-danger">Update</a>
+                        <span style="padding-right: 10px; cursor: pointer; text-decoration: underline;" title="Delete" class="text-danger delete-btn" data-id="@quiz.Id" data-toggle="modal" data-target="#confirmDeleteModal">Delete</span>
+                        <a style="padding-right: 10px;" asp-action="AddQuestion" asp-controller="Question" asp-route-id="@quiz.Id" title="Add question" class="text-danger">Add question</a>
+                        @if (quiz.NrOfQuestions >= 1)
+                        {
+                            <span style="padding-right: 10px; cursor: pointer; text-decoration: underline;" title="Publish" class="text-danger publish-btn" data-id="@quiz.Id" data-toggle="modal" data-target="#confirmPublishModal">Publish quiz</span>
+                        }
+                    </div>
+                    <br />
+                }
+            }
+        </div>
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmation required</h5>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete this quiz?
+                    </div>
+                    <div class="modal-footer">
+                        <form id="deleteForm" method="post">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                            <button type="submit" class="btn btn-primary">Yes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="confirmPublishModal" tabindex="-1" role="dialog" aria-labelledby="confirmPublishModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmPublishModalLabel">Confirmation required</h5>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to publish this quiz?
+                    </div>
+                    <div class="modal-footer">
+                        <form id="publishForm" method="post">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                            <button type="submit" class="btn btn-primary">Yes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+<script>
+    $(document).ready(function () {
+        $('.delete-btn').on('click', function () {
+            var itemId = $(this).data('id');
+
+            var url = '@Html.Raw(Url.Action("DeleteQuiz", "Quiz", new { id = "__itemId__", view = "ViewUnpublished", controller = "Quiz"}))';
+            var params = url.replace('__itemId__', itemId);
+
+            $('#deleteForm').attr('action', params);
+        });
+
+        $('.publish-btn').on('click', function () {
+            var itemId = $(this).data('id');
+
+            var url = '@Html.Raw(Url.Action("PublishQuiz", "Quiz", new { id = "__itemId__"}))';
+            var params = url.replace('__itemId__', itemId);
+
+            $('#publishForm').attr('action', params);
+        });
+    });
+</script>

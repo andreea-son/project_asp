@@ -1,0 +1,40 @@
+﻿@using System.Globalization;
+@using Project.Client.Common.Models;
+@model QuizResultDto
+@{
+    string formattedDateString = Model.DateTaken.ToString("dd MMMM yyyy", CultureInfo.InvariantCulture);
+    bool condition = (Model.NumberOfCorrectQuestions >= (int)Math.Ceiling((double)Model.NumberOfQuestions / 2));
+    string quizName;
+    bool note = false;
+    if (ViewData["quizName"] == null)
+    {
+        quizName = Model.QuizName;
+    }
+    else
+    {
+        quizName = ViewData["quizName"].ToString();
+        note = true;
+    }
+}
+<section class="quizResult">
+    <h4 class="quizName">@quizName</h4>
+    @if (note == true)
+    {
+        <p>Looks like this quiz has been deleted...</p>
+    }
+    <p><strong>@formattedDateString</strong></p>
+    <p>Score: <span class="quizScore">@Model.Score point@(Model.Score == 1 ? string.Empty : "s")</span></p>
+    <p>Total Questions: @Model.NumberOfQuestions</p>
+    <p>Correct Answers: @Model.NumberOfCorrectQuestions</p>
+    <p class=@(condition ? "text-success" : "text-danger")>
+        @if (condition)
+        {
+            <i class="fa-solid fa-check fa-xl"></i>
+        }
+        else
+        {
+            <i class="fa-solid fa-x fa-xl"></i>
+        }
+    </p>
+    <br />
+</section>

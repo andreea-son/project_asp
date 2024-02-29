@@ -1,0 +1,112 @@
+﻿@{
+    @model Project.Client.Models.RegisterDto
+    ViewData["Title"] = "Register";
+}
+
+<div class="text-center">
+    <h1 class="p-3 rounded-pill my-5 box-shadow bg-light text-dark d-inline-block">Register</h1>
+</div>
+<div class="container d-flex justify-content-center">
+    <form id="registerForm" asp-controller="Account" asp-action="Register" method="post">
+        <table class="w-100">
+            <!-- section username -->
+            <tr>
+                <td class="w-25">
+                    <label asp-for="Username">Username</label>
+                </td>
+                <td class="w-75">
+                    <input type="text" asp-for="Username" name="Username" class="form-control" value="@Model.Username">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="text-center">
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </td>
+            </tr>
+            <!-- section password -->
+            <tr>
+                <td class="w-25">
+                    <label asp-for="Password">Password</label>
+                </td>
+                <td class="w-75">
+                    <input type="password" asp-for="Password" name="Password" class="form-control" value="@Model.Password">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="text-center">
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </td>
+            </tr>
+            <!-- section password confirm -->
+            <tr>
+                <td class="w-25">
+                    <label asp-for="PasswordConfirm">PasswordConfirm</label>
+                </td>
+                <td class="w-75">
+                    <input type="password" asp-for="PasswordConfirm" name="PasswordConfirm" value="@Model.PasswordConfirm" class="form-control">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="text-center">
+                    <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="w-25">
+                    <label asp-for="Role">Role</label>
+                </td>
+                <td class="w-75">
+                    <select class="form-control" asp-for="Role" name="Role">
+                        <option selected="selected" value="Regular">Regular user</option>
+                        <option value="Creator">Quiz Creator</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="text-center">
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </td>
+            </tr>
+            <!-- section generic registration errors -->
+            <tr>
+                <td colspan="2" class="w-100 text-center">
+                    <button type="submit" class="btn btn-danger text-light">Register</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<!-- section registration success -->
+<div class="text-center w-100">
+    <p>
+        Already have an account? <a asp-controller="Account" asp-action="Login" title="Login" class="text-dark">Login</a>
+    </p>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#registerForm').on('submit', function (event) {
+                event.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: form.serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            window.location.href = "Login";
+                        } else {                           
+                            if (data.errorMessage)
+                                alert(data.errorMessage);
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("STOP!" + textStatus + " " + errorThrown);
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,127 @@
+﻿@using Project.Client.Common.Models;
+@using Project.Client.Common.Enums;
+@using System.Security.Claims;
+
+@model IEnumerable<QuizDisplayDto>
+@{
+    ViewData["Title"] = "Home Page";
+    List<QuizDisplayDto> computerScienceQuizzes = new();
+    List<QuizDisplayDto> mathQuizzes = new();
+}
+
+<section id="about" class="text-center">
+    <h1 class="p-3 rounded-pill my-5 box-shadow bg-light text-dark d-inline-block">Overview</h1>
+    <div>
+        <h4 class="my-3">Welcome to <span class="wiser">Wiser</span> - The Ultimate Learning Adventure</h4>
+        <div class="text-start">
+            Are you ready to challenge your mind and expand your knowledge, all while earning exciting rewards? Look no further!
+            <span class="wiser">Wiser</span> is the e-learning platform where knowledge and fun collide in a universe of quizzes!
+        </div>
+        <h4 class="my-3">Learn by Quizzing</h4>
+        <div class="text-start">
+            Our platform transforms traditional learning into an interactive quiz journey, making education not just informative but incredibly fun!
+            Each quiz you ace isn't just a victory for your intellect; it's a chance to flaunt your achievements! Celebrate your learning milestones 
+            with our exclusive virtual badges. Collect them, showcase your triumphs, and watch your badge collection grow as you master new challenges.
+        </div>
+        <h4 class="my-3">Earn Badges as You Conquer</h4>
+        <div class="text-start">
+            What sets <span class="wiser">Wiser</span> apart? Our vibrant community! Here, everyone is an educator and a learner.
+            Feel the thrill of crafting your own quizzes and sharing your unique knowledge with the world.
+        </div>
+        <h4 class="my-3">Community of Quiz Creators</h4>
+        <div class="text-start">
+            Getting started is as easy as it gets! Just create an account, and you're all set.
+            No complicated steps. Join our community of passionate learners today.
+        </div>
+    </div>
+</section>
+
+@*<div class="text-center">
+    <h1 class="my-5 d-inline-block p-3 rounded-pill box-shadow bg-light text-dark me-5">Some of Our Quizzes</h1>
+</div>
+
+@if (Model.Count() == 0)
+{
+    <div class="text-center">
+        <h4>No quizzes yet.</h4>
+    </div>
+}
+else
+{
+    @foreach (var quiz in Model)
+    {
+        if (quiz.Published == true)
+        {
+            if (quiz.Category == Category.ComputerScience)
+            {
+                computerScienceQuizzes.Add(quiz);
+            }
+            else
+            {
+                mathQuizzes.Add(quiz);
+            }
+        }
+    }
+    <section class="d-flex text-center text-dark" id="quiz-categories">
+        <div class="flex-even p-4 border-right">
+            <h2 class="mb-3">Computer Science Quizzes</h2>
+            @if (computerScienceQuizzes is null)
+            {
+                <h4>No quizzes yet.</h4>
+            }
+            else
+            {
+                @foreach (var quiz in computerScienceQuizzes)
+                {
+                    <partial name="_DisplayQuizPartial" model="quiz" />
+                }
+            }
+        </div>
+        <div class="flex-even p-4">
+            <h2 class="mb-3">Mathematics Quizzes</h2>
+            @if (computerScienceQuizzes is null)
+            {
+                <h4>No quizzes yet.</h4>
+            }
+            else
+            {
+                @foreach (var quiz in mathQuizzes)
+                {
+                    <partial name="_DisplayQuizPartial" model="quiz" />
+                }
+            }
+        </div>
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmation required</h5>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete this quiz?
+                    </div>
+                    <div class="modal-footer">
+                        <form id="deleteForm" method="post">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                            <button type="submit" class="btn btn-primary">Yes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+<script>
+    $(document).ready(function () {
+        $('.delete-btn').on('click', function () {
+            var itemId = $(this).data('id');
+
+            var url = '@Html.Raw(Url.Action("DeleteQuiz", "Quiz", new { id = "__itemId__", view = "Index", controller = "Home"}))';
+            var params = url.replace('__itemId__', itemId);
+
+            $('#deleteForm').attr('action', params);
+        });
+    });
+</script>*@
+

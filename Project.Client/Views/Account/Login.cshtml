@@ -1,0 +1,75 @@
+﻿@{
+    @model Project.Client.Models.LoginDto
+    ViewData["Title"] = "Login";
+}
+
+<div class="text-center">
+    <h1 class="p-3 rounded-pill my-5 box-shadow bg-light text-dark d-inline-block">Login</h1>
+</div>
+<div class="container d-flex justify-content-center">
+    <form id="loginForm" method="post" action="/Account/Login">
+        <table class="w-100">
+            <!-- section username -->
+            <tr>
+                <td class="w-25">
+                    <label for="username">Username</label>
+                </td>
+                <td class="w-75">
+                    <input type="text" asp-for="Username" name="username" class="form-control" value="@Model.Username">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="text-center">
+                    <span class="text-danger" asp-validation-for="Username"></span>
+                </td>
+            </tr>
+            <!-- section password -->
+            <tr>
+                <td class="w-25">
+                    <label for="password">Password</label>
+                </td>
+                <td class="w-75">
+                    <input type="password" asp-for="Password" name="password" class="form-control" value="@Model.Password" autocomplete="new-password">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="text-center">
+                    <span class="text-danger" asp-validation-for="Password"></span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="w-100 text-center">
+                    <button type="submit" class="btn btn-danger text-light">Login</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#loginForm').on('submit', function (event) {
+                event.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: form.serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            window.location.href = "/Home/Index"; 
+                        } else {
+                            if (data.errorMessage)
+                                alert(data.errorMessage);
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("STOP!" + textStatus + " " + errorThrown);
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,10 @@
+﻿$primary: #9d8c6f;
+$secondary: #524335;
+$light: #f1efe7;
+$success: #00bf63;
+$danger: #ff5757;
+$grid-breakpoints: ( xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px, xxl: 1400px );
+$form-range-thumb-width: 1.5rem;
+$form-range-thumb-bg: #ff5757;
+$form-range-track-bg: #ddd;
+@import "../lib/bootstrap/scss/bootstrap";

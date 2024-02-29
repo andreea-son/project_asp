@@ -1,0 +1,160 @@
+﻿@using Project.Client.Common.Models;
+@model QuizQuestionDto
+@{
+    ViewData["Title"] = "Add Question";
+    var quizId = ViewBag.QuizId;
+}
+
+<div class="text-center">
+    <h1 class="p-3 rounded-pill my-5 box-shadow bg-light text-dark d-inline-block">Add Question</h1>
+</div>
+<div class="container d-flex justify-content-center">
+    <div>
+        <label id="checkbox">
+            <input type="checkbox" id="chkQuestionType" style="display: none"> 
+            <i class="fa-regular fa-square-check"></i>
+            <i class="fa-regular fa-square"></i>
+            Is True/False question
+        </label>
+        <form id="addQuestionForm" asp-controller="Question" asp-action="AddQuestion" method="post">
+            <table class="w-100">
+                <!-- section Name -->
+                <tr>
+                    <td class="w-25">
+                        <label asp-for="QuestionName">Question</label>
+                    </td>
+                    <td class="w-75">
+                        <input type="text" asp-for="QuestionName" name="QuestionName" class="form-control" value="@Model?.QuestionName" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="text-center">
+                        <span asp-validation-for="QuestionName" class="text-danger"></span>
+                    </td>
+                </tr>
+                <!-- section First Option -->
+                <tr>
+                    <td class="w-25">
+                        <label asp-for="FirstOption">FirstOption</label>
+                    </td>
+                    <td class="w-75">
+                        <input type="text" id="txtFirstOption" asp-for="FirstOption" name="FirstOption" class="form-control" value="@Model?.FirstOption" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="text-center">
+                        <span asp-validation-for="FirstOption" class="text-danger"></span>
+                    </td>
+                </tr>
+                <!-- section Second Option -->
+                <tr>
+                    <td class="w-25">
+                        <label asp-for="SecondOption">SecondOption</label>
+                    </td>
+                    <td class="w-75">
+                        <input type="text" id="txtSecondOption" asp-for="SecondOption" name="SecondOption" class="form-control" value="@Model?.SecondOption" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="text-center">
+                        <span asp-validation-for="SecondOption" class="text-danger"></span>
+                    </td>
+                </tr>
+                    <!-- section Third Option -->
+                <tr>
+                    <td class="w-25">
+                        <label asp-for="ThirdOption">ThirdOption</label>
+                    </td>
+                    <td class="w-75">
+                        <input type="text" id="txtThirdOption" asp-for="ThirdOption" name="ThirdOption" class="form-control" value="@Model?.ThirdOption" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="text-center">
+                        <span asp-validation-for="ThirdOption" class="text-danger"></span>
+                    </td>
+                </tr>
+                    <!-- section Fourth Option -->
+                <tr>
+                    <td class="w-25">
+                        <label asp-for="FourthOption">FourthOption</label>
+                    </td>
+                    <td class="w-75">
+                        <input type="text" id="txtFourthOption" asp-for="FourthOption" name="FourthOption" class="form-control" value="@Model?.FourthOption" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="text-center">
+                        <span asp-validation-for="FourthOption" class="text-danger"></span>
+                    </td>
+                </tr>
+                <!-- section Correct Answer -->
+                <tr>
+                    <td class="w-25">
+                        <label asp-for="CorrectAnswer">CorrectAnswer</label>
+                    </td>
+                    <td class="w-75">
+                        <input type="text" asp-for="CorrectAnswer" name="CorrectAnswer" class="form-control" value="@Model?.CorrectAnswer" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="text-center">
+                        <span asp-validation-for="CorrectAnswer" class="text-danger"></span>
+                    </td>
+                </tr>
+                <!-- section Correct Answer Points -->
+                <tr>
+                    <td class="w-25">
+                        <label asp-for="CorrectAnswerPoints">CorrectAnswerPoints</label>
+                    </td>
+                    <td class="w-75">
+                        <input type="text" asp-for="CorrectAnswerPoints" name="CorrectAnswerPoints" class="form-control" value="@Model?.CorrectAnswerPoints" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="text-center">
+                        <span asp-validation-for="CorrectAnswerPoints" class="text-danger"></span>
+                    </td>
+                </tr>
+                <!-- section QuizId -->
+                <input type="hidden" asp-for="QuizId" name="QuizId" value="@quizId"/>
+                <tr>
+                    <td colspan="2" class="w-100 text-center">
+                        <button type="submit" class="btn btn-danger text-light">Add Question</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        window.addEventListener('load', (e) => {
+            const chkQuestionType = document.getElementById('chkQuestionType');
+            const firstOption = document.getElementById('txtFirstOption');
+            const secondOption = document.getElementById('txtSecondOption');
+            const thirdOption = document.getElementById('txtThirdOption');
+            const fourthOption = document.getElementById('txtFourthOption');
+            chkQuestionType.addEventListener('change', (event) => {
+                if (event.currentTarget.checked) {
+                    firstOption.value = 'true';
+                    firstOption.setAttribute('readOnly', 'true')
+                    secondOption.value = 'false';
+                    secondOption.setAttribute('readOnly', 'true')
+                    thirdOption.setAttribute('disabled', 'true')
+                    fourthOption.setAttribute('disabled', 'true')
+                    thirdOption.value = '';
+                    fourthOption.value = '';
+                } else {
+                    firstOption.value = '';
+                    firstOption.removeAttribute("readOnly")
+                    secondOption.value = '';
+                    secondOption.removeAttribute("readOnly")
+                    thirdOption.removeAttribute("disabled")
+                    fourthOption.removeAttribute("disabled")
+                }
+            })
+        });
+    </script>
+}

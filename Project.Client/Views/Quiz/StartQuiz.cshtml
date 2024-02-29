@@ -1,0 +1,71 @@
+﻿@using Project.Client.Common.Models;
+@model QuizTakeDto
+@{
+    ViewData["Title"] = "Start Quiz";
+}
+
+<br />
+<div class="text-center">
+    <div class="text-dark">
+        <h3>@Model.Name</h3>
+        <h5>@Model.Category</h5>
+    </div>
+</div>
+<hr />
+
+@{
+    var questions = Model.QuizQuestions as QuizQuestionDto[];
+}
+<div class="container d-flex text-left justify-content-center">
+    <div class="w-100">
+        @if (questions is null || questions.Count() == 0)
+        {
+            <p>No questions yet.</p>
+        }
+        else
+        {
+            <form asp-controller="Quiz" id="frmQuiz" asp-action="StartQuiz" method="post">
+                <div class="model-validation text-danger"></div>
+                @for (var i = 0; i < questions.Length; i++)
+                {
+                    <h4>@questions[i].QuestionName</h4>
+                    <input type="hidden" asp-for="Answers[i].QuestionId" value="@questions[i].Id" />
+                    <label class="radio d-block">
+                        <input type="radio" asp-for="Answers[i].Answer" value="@questions[i].FirstOption" style="display: none" required />
+                        <i class="fa-regular fa-circle"></i>
+                        <i class="fa-regular fa-circle-dot"></i>
+                        @questions[i].FirstOption
+                    </label>
+                    <label class="radio d-block">
+                        <input type="radio" asp-for="Answers[i].Answer" value="@questions[i].SecondOption" style="display: none" required />
+                        <i class="fa-regular fa-circle"></i>
+                        <i class="fa-regular fa-circle-dot"></i>
+                        @questions[i].SecondOption
+                    </label>
+                    @if (@questions[i].ThirdOption is not null)
+                    {
+                        <label class="radio d-block">
+                            <input type="radio" asp-for="Answers[i].Answer" value="@questions[i].ThirdOption" style="display: none" required />
+                            <i class="fa-regular fa-circle"></i>
+                            <i class="fa-regular fa-circle-dot"></i>
+                            @questions[i].ThirdOption
+                        </label>
+                    }
+                    @if (@questions[i].FourthOption is not null)
+                    {
+                        <label class="radio d-block">
+                            <input type="radio" asp-for="Answers[i].Answer" value="@questions[i].FourthOption" style="display: none" required />
+                            <i class="fa-regular fa-circle"></i>
+                            <i class="fa-regular fa-circle-dot"></i>
+                            @questions[i].FourthOption
+                        </label>
+                    }
+                    <br />
+                }
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-danger text-light" type="submit" id="btnFinish">Finish</button>
+                </div>
+            </form>
+        }
+    </div>
+</div>

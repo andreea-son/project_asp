@@ -1,0 +1,41 @@
+﻿@using Project.Client.Common.Models;
+@using Project.Client.Common.Enums;
+@using System.Security.Claims;
+@model IEnumerable<QuizDisplayDto>
+@{
+    ViewData["Title"] = "Search results";
+}
+<div class="text-center">
+    <h1 class="my-5 d-inline-block p-3 rounded-pill box-shadow bg-light text-dark me-5">Search results</h1>
+</div>
+
+@if (Model.Count() == 0)
+{
+    <h4 class="text-center">No quizzes matched your search.</h4>
+}
+else
+{
+    <div class="d-flex justify-content-center">
+        <div>
+            @foreach (var quiz in Model)
+            {
+                <div class="quiz-div ms-5">
+                    <h4>@quiz.Name</h4>
+                    <p>
+                        @quiz.NrOfQuestions question@(quiz.NrOfQuestions == 1 ? string.Empty : "s")
+                    </p>
+                    @if (User?.Identity?.IsAuthenticated == true)
+                    {
+                        <a style="padding-right: 10px;" asp-action="StartQuiz" asp-controller="Quiz" asp-route-id="@quiz.Id" title="Start" class="text-dark">Start quiz</a>
+                    }
+                    @if (User.IsInRole("admin") || User?.FindFirst(ClaimTypes.NameIdentifier)?.Value == quiz.UserId.ToString())
+                    {
+                        <a style="padding-right: 10px;" asp-action="UpdateQuiz" asp-controller="Quiz" asp-route-id="@quiz.Id" title="Update" class="text-dark">Update</a>
+                        <a style="padding-right: 10px;" asp-action="DeleteQuiz" asp-controller="Quiz" asp-route-id="@quiz.Id" title="Delete" class="text-dark">Delete</a>
+                        <a style="padding-right: 10px;" asp-action="AddQuestion" asp-controller="Question" title="Add question" class="text-dark">Add question</a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+}

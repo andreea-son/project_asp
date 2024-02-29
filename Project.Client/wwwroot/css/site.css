@@ -1,0 +1,136 @@
+:root {
+    --primary: #9d8c6f;
+    --secondary: #524335;
+    --light: #f1efe7;
+    --success: #00bf63;
+    --danger: #ff5757;
+}
+
+body {
+    font-family: 'Work Sans', sans-serif;
+}
+
+@media (max-width: 576px) {
+    :root {
+        font-size: 10px;
+    }
+}
+
+@media (min-width: 576px) {
+    :root {
+        font-size: 12px;
+    }
+}
+
+@media (min-width: 768px) {
+    :root {
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 992px) {
+    :root {
+        font-size: 16px;
+    }
+}
+
+@media (min-width: 1200px) {
+    :root {
+        font-size: 18px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .border-left-nav {
+        border-left: 5px double var(--danger);
+    }
+
+    .border-right-nav {
+        border-right: 5px double var(--danger);
+    }
+}
+
+.nav-link {
+    font-size: 1.5rem;
+    padding: 0;
+}
+
+.quiz-div {
+    text-align: left;
+}
+
+.quiz-div>* {
+    padding: 0;
+    margin: 0;
+}
+
+.flex-even {
+    flex: 1;
+}
+
+footer {
+    height: 100px;
+}
+
+h1, h2, h3, h4 {
+    font-weight: 900;
+}
+
+.border-right {
+    border-right: 5px double var(--danger);
+}
+
+.box-shadow {
+    box-shadow: 1.5rem 0.75rem var(--danger);
+}
+
+body {
+    background-image: url("../assets/background.jpg");
+    background-size:contain;
+    background-repeat: round;
+    position: sticky;
+}
+
+.navbar-brand {
+    font-family: 'Dosis', sans-serif;
+    font-size: 5rem;
+}
+
+.wiser {
+    font-family: 'Dosis', sans-serif;
+    font-weight: 900;
+    color: var(--danger);
+}
+
+#checkbox input[type="checkbox"]:checked ~ .fa-square, #checkbox input[type="checkbox"] ~ .fa-square-check {
+    display: none;
+}
+
+#checkbox input[type="checkbox"] ~ .fa-square, #checkbox input[type="checkbox"]:checked ~ .fa-square-check {
+    display: inline;
+}
+
+
+.radio input[type="radio"]:checked ~ .fa-circle, .radio input[type="radio"] ~ .fa-circle-dot {
+    display: none;
+}
+
+.radio input[type="radio"] ~ .fa-circle, .radio input[type="radio"]:checked ~ .fa-circle-dot {
+    display: inline;
+}
+
+.reward {
+    width: 8rem;
+    height: auto;
+}
+
+table .table-head{
+    border-bottom: 5px double var(--danger);
+    font-size: 1.75rem;
+}
+
+table td {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+    font-size: 1.25rem;
+}

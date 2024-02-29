@@ -1,0 +1,238 @@
+﻿@using Project.Client.Common.Models;
+@model IEnumerable<QuizResultDto>
+
+@{
+    ViewData["Title"] = "Quiz Results";
+}
+<div class="text-center">
+    <h1 class="p-3 rounded-pill my-5 box-shadow bg-light text-dark d-inline-block">Filters</h1>
+</div>
+<div id="filters" class="container d-flex justify-content-center">
+    <table>
+        <tr>
+            <td class="w-25">
+                <label for="statusFilter">Status</label>
+            </td>
+            <td class="w-75">
+                <select class="form-control" name="statusFilter" id="statusFilter">
+                    <option selected="selected" value="any">Any status</option>
+                    <option value="passed">Passed</option>
+                    <option value="failed">Failed</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="w-50">
+                <label for="minimumScoreFilter">Minimum score <span id="infoRange">(0)</span></label>
+            </td>
+            <td class="w-75">
+                <input type="range" id="minimumScoreFilter" value="0" min="0" max="100" class="form-range">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                Sort by name
+                <button id="sortAscendingBtn" class="btn btn-danger text-light d-inline-block my-3" style="width: 2.5rem">&uarr;</button>
+                <button id="sortDescendingBtn" class="btn btn-danger text-light d-inline-block my-3" style="width: 2.5rem">&darr;</button>
+                <br />
+                <button id="filterBtn" class="btn btn-danger text-light d-inline-block my-3" style="width: 5rem">Filter</button>
+                <button id="resetBtn" class="btn btn-danger text-light d-inline-block my-3" style="width: 5rem">Reset</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="text-center">
+    <h1 class="p-3 rounded-pill my-5 box-shadow bg-light text-dark d-inline-block">My quiz results</h1>
+</div>
+@if (Model.Count() > 0)
+{
+    var deletedQuizzesResults = Model.Where(quizRes => string.IsNullOrEmpty(quizRes.QuizName)).ToList();
+    var existingQuizzesResults = Model.Where(quizRes => !string.IsNullOrEmpty(quizRes.QuizName)).ToList();
+    <div class="container d-flex justify-content-center">
+        <div>
+            @foreach (var quizResult in existingQuizzesResults)
+            {
+                <partial name="_DisplayQuizResultPartial" model="@quizResult" />
+            }
+            @if (deletedQuizzesResults.Count() > 0)
+            {
+                ViewData["quizName"] = "Deleted";
+                @foreach (var quizResult in deletedQuizzesResults)
+                {
+                    <partial name="_DisplayQuizResultPartial" model="@quizResult" view-data="@ViewData" />
+                }
+            }
+        </div>
+    </div>
+
+    <div class="container d-flex justify-content-center">
+        <div>
+            @{
+                var filteredQuizzes = Model
+                .Where(quiz => quiz.NumberOfCorrectQuestions >= (int)Math.Ceiling((double)quiz.NumberOfQuestions / 2));
+
+                var uniquePerfectScoreQuizzes = filteredQuizzes
+                .Where(quiz => quiz.NumberOfCorrectQuestions == quiz.NumberOfQuestions)
+                .DistinctBy(q => q.QuizId)
+                .ToList();
+
+                var perfectScoreSum = uniquePerfectScoreQuizzes.Sum(quiz => quiz.Score);
+
+                var nonPerfectScorePoints = filteredQuizzes
+                .Where(quiz => quiz.NumberOfCorrectQuestions != quiz.NumberOfQuestions)
+                .Sum(quiz => quiz.Score);
+
+                var totalPoints = perfectScoreSum + nonPerfectScorePoints;
+            }
+            <div class="text-center">
+                <h1 class="p-3 rounded-pill my-5 box-shadow bg-light text-dark d-inline-block">My rewards</h1>
+            </div>
+            <h4>Total: @totalPoints point@(totalPoints == 1 ? string.Empty : "s")</h4>
+            @if (totalPoints >= 1000)
+            {
+                <strong>Congratulations, you reached level Elite!</strong>
+            }
+            else if (totalPoints >= 500)
+            {
+                <strong>Congratulations, you reached level Expert!</strong>
+            }
+            else if (totalPoints >= 100)
+            {
+                <strong>Congratulations, you reached level Advanced!</strong>
+            }
+            else if (totalPoints >= 50)
+            {
+                <strong>Congratulations, you reached level Intermediate!</strong>
+            }
+            else if (totalPoints > 0)
+            {
+                <strong>Congratulations, you reached level Beginner!</strong>
+            }
+            <br />
+            <br />
+            <div class="d-flex">
+                @if (totalPoints >= 1000)
+                {
+                    <div class="text-center me-2">
+                        <img src="~/assets/Elite.png" class="reward" />
+                        <p>Elite</p>
+                    </div>
+                }
+                @if (totalPoints >= 500)
+                {
+                    <div class="text-center me-2">
+                        <img src="~/assets/Expert.png" class="reward" />
+                        <p>Expert</p>
+                    </div>
+                }
+                @if (totalPoints >= 100)
+                {
+                    <div class="text-center me-2">
+                        <img src="~/assets/Advanced.png" class="reward" />
+                        <p>Advanced</p>
+                    </div>
+                }
+                @if (totalPoints >= 50)
+                {
+                    <div class="text-center me-2">
+                        <img src="~/assets/Intermediate.png" class="reward" />
+                        <p>Intermediate</p>
+                    </div>
+                }
+                @if (totalPoints > 0)
+                {
+                    <div class="text-center">
+                        <img src="~/assets/Beginner.png" class="reward" />
+                        <p>Beginner</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="text-center">
+        <h4>You haven't taken any quizzes.</h4>
+    </div>
+}
+
+@section Scripts {
+    <script type="text/javascript">
+        document.getElementById("minimumScoreFilter").onchange = function () {
+            document.getElementById("infoRange").innerHTML = `(${this.value})`;
+        }
+        document.getElementById("filterBtn").onclick = function () {
+            var statusFilter = document.getElementById("statusFilter");
+            var minimumScoreFilter = document.getElementById("minimumScoreFilter");
+
+            var quizResults = document.getElementsByClassName("quizResult");
+            for (let quizResult of quizResults) {
+                var cond1 = true, cond2 = true;
+                quizResult.style.display = "none";
+
+                if ((statusFilter.value == "passed") && (quizResult.getElementsByClassName("text-success")[0])) {
+                    cond1 = true;
+                }
+                else if ((statusFilter.value == "failed") && (quizResult.getElementsByClassName("text-danger")[0])) {
+                    cond1 = true;
+                }
+                else if (statusFilter.value == "any") {
+                    cond1 = true;
+                }
+                else {
+                    cond1 = false;
+                }
+
+                var quizScore = quizResult.getElementsByClassName("quizScore")[0].innerHTML;
+                if (parseInt(minimumScoreFilter.value) <= parseInt(quizScore)) {
+                    cond2 = true;
+                }
+                else {
+                    cond2 = false;
+                }
+
+                if (cond1 && cond2) {
+                    quizResult.style.display = "block";
+                }
+            }
+       }
+        function sort(sign) {
+            var quizResults = document.getElementsByClassName("quizResult");
+            var arrayOfquizResults = Array.from(quizResults);
+
+            var parentNode = quizResults[0].parentNode;
+
+            arrayOfquizResults.sort(function (a, b) {
+                var name_a = a.getElementsByClassName("quizName")[0].innerHTML;
+                var name_b = b.getElementsByClassName("quizName")[0].innerHTML;
+                return sign * name_a.localeCompare(name_b);
+            });
+
+            while (parentNode.firstChild) {
+                parentNode.removeChild(parentNode.firstChild);
+            }
+
+            for (let quizResult of arrayOfquizResults) {
+                parentNode.appendChild(quizResult);
+            }
+        }
+
+        document.getElementById("sortAscendingBtn").onclick = function () {
+            sort(1);
+        }
+        document.getElementById("sortDescendingBtn").onclick = function () {
+            sort(-1);
+        }
+        document.getElementById("resetBtn").onclick = function () {
+            var quizResults = document.getElementsByClassName("quizResult");
+            for (let quizResult of quizResults) {
+                quizResult.style.display = "block";
+            }
+
+            document.getElementById("statusFilter").value = "any";
+            document.getElementById("minimumScoreFilter").value = "0";
+            document.getElementById("infoRange").innerHTML = "(0)";
+        }
+    </script>
+}

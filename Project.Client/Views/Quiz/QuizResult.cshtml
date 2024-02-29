@@ -1,0 +1,27 @@
+﻿@using Project.Client.Common.Models;
+@model QuizResultDto;
+
+@{
+    ViewData["Title"] = "Quiz Result";
+}
+
+<div class="text-center">
+    <h1 class="p-3 rounded-pill my-5 box-shadow bg-light text-dark d-inline-block">Your results</h1>
+</div>
+
+<div class="container d-flex justify-content-center">
+    <div>
+        @if (Model.NumberOfCorrectQuestions >= Model.NumberOfQuestions / 2)
+        {
+            <h4>Congratulations, you passed!</h4>
+        }
+        else
+        {
+            <h4>Oops, try again! You failed...</h4>
+        }
+        <section>
+            <p>Your score: @Model.Score points</p>
+            <p>You answered @Model.NumberOfCorrectQuestions question@(Model.NumberOfCorrectQuestions == 1 ? string.Empty : "s") correctly out of @Model.NumberOfQuestions question@(Model.NumberOfQuestions == 1 ? string.Empty : "s")</p>
+        </section>
+    </div>
+</div>

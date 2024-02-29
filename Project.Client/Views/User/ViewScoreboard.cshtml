@@ -1,0 +1,74 @@
+﻿@using Project.Client.Common.Models;
+@model IEnumerable<QuizResultDto>
+
+@{
+    ViewData["Title"] = "Leaderboard";
+}
+<div class="text-center">
+    <h1 class="my-5 d-inline-block p-3 rounded-pill box-shadow bg-light text-dark me-5">Leaderboard</h1>
+</div>
+<div class="container d-flex justify-content-center">
+    <div>
+        @if (Model.Count() > 0)
+        {
+            var i = 0;
+            var Rankings = Model.GroupBy(quiz => quiz.UserId).Select(group => new
+            {
+                UserId = group.Key,
+                TotalScore = group.Sum(quiz => quiz.Score),
+                Username = group.FirstOrDefault()?.Username
+            }).OrderByDescending(r => r.TotalScore).ToArray();
+            <table>
+                <tr class="text-center bg-light table-head">
+                    <th>#</th>
+                    <th>Score</th>
+                    <th>Username</th>
+                    <th>Level</th>
+                </tr>
+                @foreach (var ranking in Rankings)
+                {
+                    i = i + 1;
+                    <tr class="text-center bg-light">
+                        <td>@i</td>
+                        <td>@ranking.TotalScore</td>
+                        <td>@ranking.Username</td>
+                        @if (ranking.TotalScore >= 1000)
+                        {
+                            <td>
+                                Elite
+                            </td>
+                        }
+                        else if (ranking.TotalScore >= 500)
+                        {
+                            <td>
+                                Expert
+                            </td>
+                        }
+                        else if (ranking.TotalScore >= 100)
+                        {
+                            <td>
+                                Advanced
+                            </td>
+                        }
+                        else if (ranking.TotalScore >= 50)
+                        {
+                            <td>
+                                Intermediate
+                            </td>
+                        }
+                        else if (ranking.TotalScore > 0)
+                        {
+                            <td>
+                                Beginner
+                            </td>
+                        }
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <h4>There are no quizzes.</h4>
+        }
+    </div>
+</div>
